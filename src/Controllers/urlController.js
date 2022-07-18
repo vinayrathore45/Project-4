@@ -24,7 +24,7 @@ const urlShorten = async function (req, res) {
         if (!isValid(data.longUrl)) return res.status(400).send({ status: false, meassage: "Url  must be string & not empty" });
         if (!validUrl.isUri(data.longUrl)) return res.status(400).send({ status: false, message: "LongUrl is not valid" })
         let CheckUrl = await urlModel.findOne({ longUrl: data.longUrl })
-        if (!CheckUrl) return res.status(409).send({ status: false, meassage: "Url is already present " });
+        if (CheckUrl) return res.status(409).send({ status: false, meassage: "Url is already present " });
 
         let urlCode = shortid.generate(data.longUrl)
         let shortUrl = `http://localhost:3000/${urlCode}`
@@ -45,7 +45,7 @@ const getUrl = async function (req, res) {
  if (!urlCheck) return res.status(404).send({ status: false, message: "Url not found" })
 
 
-return res.status(302).send({status:true,message:`redirect to ${CheckUrl.longUrl}`})
+return res.status(302).send({status:true,message:`redirect to ${urlCheck.longUrl}`})
 
     } catch (error) {
         res.status(500).send({ status: false, error: error.message })
