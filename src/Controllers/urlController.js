@@ -57,11 +57,11 @@ const urlShorten = async function (req, res) {
         let cachedProfileData = await GET_ASYNC(`${longUrl}`)
         let parsedcatch = JSON.parse(cachedProfileData)
         if (parsedcatch) {
-            return res.status(409).send({ status: false, message: "long url already present", data: parsedcatch })
+            return res.status(200).send({ status: true, data: parsedcatch })
         } else {
             let CheckUrl = await urlModel.findOne({ longUrl: longUrl })
             await SET_ASYNC(`${longUrl}`, JSON.stringify(CheckUrl))
-            if (CheckUrl) return res.status(409).send({ status: false, meassage: "long url is already present", data: CheckUrl });
+            if (CheckUrl) return res.status(200).send({ status: true, data: CheckUrl });
         }
 
         let urlCode = shortid.generate()
