@@ -1,6 +1,9 @@
 const urlModel = require("../models/urlModels");
 const validUrl = require("valid-url")
 const shortid = require("shortid")
+const validator = require("validator")
+
+
 const isValid = function (value) {
     if (typeof (value) === "undefined" || typeof (value) === null) return false;
     if (typeof (value) === "string" && value.trim().length === 0) return false;
@@ -49,10 +52,12 @@ const urlShorten = async function (req, res) {
         let longUrl = data.longUrl
 
 
-        if (!isvalidRequest(data)) return res.status(400).send({ status: false, meassage: "Request Body should not be empty " })
-        if (!longUrl) return res.status(400).send({ status: false, meassage: "Url must be present " });
-        if (!isValid(longUrl)) return res.status(400).send({ status: false, meassage: "Url  must be string & not empty" });
+        if (!isvalidRequest(data)) return res.status(400).send({ status: false, message: "Request Body should not be empty " })
+        if (!longUrl) return res.status(400).send({ status: false, message: "Url must be present " });
+        if (!isValid(longUrl)) return res.status(400).send({ status: false, message: "Url  must be string & not empty" });
         if (!validUrl.isUri(longUrl)) return res.status(400).send({ status: false, message: "LongUrl is not valid" })
+        if(!validator.isURL(longUrl)) return res.status(400).send({status:false,message:"longUrl is invalid"})
+
 
         let cachedProfileData = await GET_ASYNC(`${longUrl}`)
         let parsedcatch = JSON.parse(cachedProfileData)
